@@ -18,9 +18,7 @@ import Data.Text (Text)
 import Database.Persist.Sql (Unique)
 import Database.Persist.TH (persistUpperCase)
 
-import Pretty.Fields.Persistent
-import Schema.Import
-import Schema.Utils (Entity, EntityDef, Int64, MonadSql, Transaction, (.>))
+import Schema.Utils (EntityDef, Int64, MonadSql, Transaction, (.>))
 import qualified Schema.Utils as Utils
 
 Utils.mkEntities "schema" [persistUpperCase|
@@ -31,16 +29,6 @@ Dataset
 |]
 
 deriving instance Show (Unique Dataset)
-
-instance PrettyFields (Entity Dataset) where
-    prettyFieldInfo = ("Id", idField DatasetId) :|
-        [ ("Name", textField DatasetName) ]
-
-instance NamedEntity Dataset where
-    entityName = datasetName
-
-instance Importable Dataset where
-    updateFields = []
 
 migrations :: MonadSql m => Int64 -> Transaction m [EntityDef]
 migrations = Utils.mkMigrationLookup

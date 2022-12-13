@@ -38,14 +38,11 @@ Common all
   Build-Depends:        base
                ,        bytestring ^>= 0.10.8
                ,        conduit ^>= 1.3.1.1
-               ,        conduit-extra ^>= 1.3.4
                ,        containers >= 0.5.11 && < 0.7
                ,        exceptions ^>= 0.10.0
                ,        interpolate ^>= 0.2.0
                ,        monad-logger ^>= 0.3.28
                ,        mtl ^>= 2.2.1
-               ,        optparse-applicative ^>= 0.17
-               ,        pretty-show ^>= 1.10
                ,        resourcet ^>= 1.2.0
                ,        text ^>= 1.2.3.2
                ,        time ^>= 1.9
@@ -54,8 +51,7 @@ Common all
 Library
   Import:               all
   Hs-Source-Dirs:       src
-  Exposed-Modules:      Pretty.Fields
-                        Pretty.Fields.Persistent
+  Exposed-Modules:      
 
   Other-Modules:        Exceptions
                         Exceptions.Class
@@ -64,13 +60,11 @@ Library
                         Schema.Graph
                         Schema.Graph.V0
                         Schema.Graph.V1
-                        Schema.Import
                         Schema.Utils
                         Schema.Utils.TH
                         Sql.Core
                         Sql.Core.PersistCompat
                         SQLiteExts
-                        Types
 
   C-Sources:            cbits/check_unique.c
                         cbits/count_transitions.c

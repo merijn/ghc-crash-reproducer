@@ -20,8 +20,6 @@ import Data.Time.Clock (UTCTime)
 import Database.Persist.Sql (Unique)
 import Database.Persist.TH (persistUpperCase)
 
-import Pretty.Fields.Persistent
-import Schema.Import
 import Schema.Utils
     (Entity, EntityDef, Int64, MonadSql, Transaction, (.>), (.=))
 import qualified Schema.Utils as Utils
@@ -44,24 +42,6 @@ Graph
 |]
 
 deriving instance Show (Unique Graph)
-
-instance PrettyFields (Entity Graph) where
-    prettyFieldInfo = ("Id", idField GraphId) :|
-        [ ("Name", textField GraphName)
-        , ("Dataset", namedIdField GraphDatasetId)
-        , ("Pretty Name", maybeTextField GraphPrettyName)
-        , ("Filepath", textField GraphPath)
-        ]
-
-instance NamedEntity Graph where
-    entityName = optionalPrettyName graphPrettyName graphName
-
-instance Importable Graph where
-    importType _ = ExplicitUniqueImport $ \case
-        UniqGraph{} -> True
-        _ -> False
-
-    updateFields = [ForeignKeyFieldAllowMissing GraphDatasetId]
 
 migrations :: MonadSql m => Int64 -> Transaction m [EntityDef]
 migrations = Utils.mkMigrationLookup
