@@ -53,10 +53,7 @@ Library
   Hs-Source-Dirs:       src
   Exposed-Modules:      
 
-  Other-Modules:        Exceptions
-                        Exceptions.Class
-                        Pretty
-                        Schema.Dataset
+  Other-Modules:        Schema.Dataset
                         Schema.Graph
                         Schema.Graph.V0
                         Schema.Graph.V1

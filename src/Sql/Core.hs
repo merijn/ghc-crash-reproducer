@@ -77,7 +77,7 @@ module Sql.Core
     ) where
 
 import Control.Monad (join, void)
-import Control.Monad.Catch (handle, throwM)
+import Control.Monad.Catch (handle, throwM, MonadCatch, MonadThrow, MonadMask, Exception(..))
 import Control.Monad.IO.Unlift (MonadIO(liftIO), MonadUnliftIO(..))
 import Control.Monad.Logger (MonadLogger, MonadLoggerIO, logErrorN)
 import Control.Monad.Reader (ReaderT, ask, asks, runReaderT, withReaderT)
@@ -91,6 +91,7 @@ import Data.Int (Int64)
 import Data.Pool (Pool)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.Typeable (Typeable)
 import Database.Persist.Sqlite
     ( AtLeastOneUniqueKey
     , BackendCompatible
@@ -128,9 +129,28 @@ import Foreign (Ptr)
 import qualified Lens.Micro as Lens
 import qualified Lens.Micro.Extras as Lens
 
-import Exceptions
 import SQLiteExts
 import qualified Sql.Core.PersistCompat as Compat
+
+data AbortTransaction = AbortTransaction Text
+    deriving (Show, Typeable)
+
+instance Exception AbortTransaction
+
+data PatternFailed = PatternFailed Text
+    deriving (Show, Typeable)
+
+instance Exception PatternFailed
+
+data ExpectedSingleValue = ExpectedSingleValue Text
+    deriving (Show, Typeable)
+
+instance Exception ExpectedSingleValue
+
+data QueryReturnedZeroResults = QueryReturnedZeroResults
+    deriving (Show, Typeable)
+
+instance Exception QueryReturnedZeroResults
 
 newtype Avg = Avg { getAvg :: Int } deriving (Show, Eq, Ord)
 newtype Max = Max { getMax :: Int } deriving (Show, Eq, Ord)
@@ -283,7 +303,7 @@ executeSqlSingleValueMaybe query = Transaction $ do
     case result of
         [] -> return Nothing
         [Single v] -> return $ Just v
-        _ -> logThrowM $ ExpectedSingleValue query
+        _ -> throwM $ ExpectedSingleValue query
 
 executeSqlSingleValue
     :: (MonadLogger m, MonadSql m, MonadThrow m, PersistField a)
@@ -292,7 +312,7 @@ executeSqlSingleValue query = do
     result <- executeSqlSingleValueMaybe query
     case result of
         Just v -> return v
-        Nothing -> logThrowM QueryReturnedZeroResults
+        Nothing -> throwM QueryReturnedZeroResults
 
 sinkQuery
     :: MonadResource m
@@ -381,9 +401,9 @@ querySingleValue
 querySingleValue query args = runTransaction . Transaction $ do
     result <- Sqlite.rawSql query args
     case result of
-        [] -> logThrowM QueryReturnedZeroResults
+        [] -> throwM QueryReturnedZeroResults
         [Single v] -> return v
-        _ -> logThrowM $ ExpectedSingleValue query
+        _ -> throwM $ ExpectedSingleValue query
 
 getMigration :: (MonadSql m) => Migration -> Transaction m [Text]
 getMigration = liftProjectPersist . Sqlite.getMigration
@@ -419,7 +439,7 @@ instance MonadResource m => MonadSql (SqlT m) where
     getConnWithoutTransaction = SqlT $ asks Compat.unsafeAcquireSqlConnFromPool
 
 instance (MonadLogger m, MonadThrow m) => MonadFail (SqlT m) where
-    fail = logThrowM . PatternFailed . T.pack
+    fail = throwM . PatternFailed . T.pack
 
 instance MonadTrans SqlT where
     lift = SqlT . lift

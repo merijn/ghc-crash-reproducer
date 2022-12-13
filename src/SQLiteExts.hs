@@ -6,37 +6,35 @@ module SQLiteExts
     ) where
 
 import Control.Monad ((>=>), when)
+import Control.Monad.Catch (throwM, MonadCatch, MonadThrow, Exception(..))
 import qualified Control.Monad.Catch as Catch
 import Control.Monad.IO.Class (MonadIO(liftIO))
 import Control.Monad.Logger (MonadLogger)
 import qualified Data.ByteString as BS
 import Data.Text (Text)
 import Data.Text.Encoding (decodeUtf8')
+import Data.Text.Encoding.Error (UnicodeException(..))
 import Data.Typeable (Typeable)
+import Database.Sqlite (SqliteException(..))
 import Foreign (Ptr, FinalizerPtr, FunPtr, nullPtr, nullFunPtr)
 import qualified Foreign
 import Foreign.C (CInt(..), CString, withCString)
 import Foreign.Storable (Storable)
 
-import Exceptions
-import qualified Pretty
+newtype PrettyUnicodeException = PrettyUnicodeException UnicodeException
+    deriving (Show, Typeable)
+
+instance Exception PrettyUnicodeException
+
+newtype PrettySqliteException = PrettySqliteException SqliteException
+    deriving (Show, Typeable)
+
+instance Exception PrettySqliteException
 
 data SqliteErrorCode = SqliteErrorCode CInt Text
     deriving (Show, Typeable)
 
-instance Pretty SqliteErrorCode where
-    pretty (SqliteErrorCode c_errno msg) = Pretty.vsep
-        [ "SQLite function returned error code #" <> pretty errno <> ":"
-        , Pretty.reflow msg
-        ]
-      where
-        errno :: Integer
-        errno = fromIntegral c_errno
-
-instance Exception SqliteErrorCode where
-    toException = toSqlException
-    fromException = fromSqlException
-    displayException = show . pretty
+instance Exception SqliteErrorCode
 
 registerSqlFunctions
     :: (MonadIO m, MonadLogger m, MonadThrow m) => Ptr () -> m ()
@@ -71,7 +69,7 @@ wrapSqliteExceptions = Catch.handle logUnwrappedSqliteException
   where
     logUnwrappedSqliteException exc
         | Just e@SqliteException{} <- fromException exc
-        = logThrowM $ PrettySqliteException e
+        = throwM $ PrettySqliteException e
 
         | otherwise
         = Catch.throwM exc
@@ -176,8 +174,8 @@ createSqliteFun nArgs strName userData sqlFun aggStep aggFinal sqlPtr = do
     when (result /= sqliteOk) $ do
         bs <- liftIO $ unpackError sqlPtr
         case decodeUtf8' bs of
-            Left exc -> logThrowM $ PrettyUnicodeException exc
-            Right txt -> logThrowM $ SqliteErrorCode result txt
+            Left exc -> throwM $ PrettyUnicodeException exc
+            Right txt -> throwM $ SqliteErrorCode result txt
   where
     unpackError = getExtendedError >=> getErrorString >=> BS.packCString
 
@@ -243,7 +241,7 @@ createSqlWindow nArgs strName sqlStep sqlFinal sqlValue sqlInverse sqlPtr = do
     when (result /= sqliteOk) $ do
         bs <- liftIO $ unpackError sqlPtr
         case decodeUtf8' bs of
-            Left exc -> logThrowM $ PrettyUnicodeException exc
-            Right txt -> logThrowM $ SqliteErrorCode result txt
+            Left exc -> throwM $ PrettyUnicodeException exc
+            Right txt -> throwM $ SqliteErrorCode result txt
   where
     unpackError = getExtendedError >=> getErrorString >=> BS.packCString
