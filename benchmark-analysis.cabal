@@ -35,14 +35,7 @@ Library
                         Schema.Utils
                         SQLiteExts
 
-  C-Sources:            cbits/check_unique.c
-                        cbits/count_transitions.c
-                        cbits/key_value_vector.c
-                        cbits/min_key.c
-                        cbits/misc.c
-                        cbits/pcg_basic.c
-                        cbits/random_sample.c
-                        cbits/random_fun.c
+  C-Sources:            cbits/random_fun.c
 
   CC-Options:           -Wall -Wextra -pedantic -std=c11 -g -O3 -DSQLITE_CORE
   Include-Dirs:         cbits
@@ -68,12 +61,8 @@ Library
                         ViewPatterns
 
   Build-Depends:        base
-               ,        bytestring ^>= 0.10.8
-               ,        exceptions ^>= 0.10.0
-               ,        monad-logger ^>= 0.3.28
                ,        persistent ^>= 2.14.3
                ,        persistent-sqlite ^>= 2.13.1
-               ,        resourcet ^>= 1.2.0
                ,        text ^>= 1.2.3.2
                ,        template-haskell ^>= 2.16.0.0
 
