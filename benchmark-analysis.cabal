@@ -31,7 +31,6 @@ Library
   Exposed-Modules:      
 
   Other-Modules:        Schema.Dataset
-                        Schema.Graph
                         Schema.Utils
                         SQLiteExts
 
