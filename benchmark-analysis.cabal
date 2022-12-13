@@ -54,36 +54,17 @@ Common all
 Library
   Import:               all
   Hs-Source-Dirs:       src
-  Exposed-Modules:      Core
-                        Model.Stats
-                        Predictor
-                        Pretty.Fields
+  Exposed-Modules:      Pretty.Fields
                         Pretty.Fields.Persistent
-                        Pretty.Fields.Record
-                        Query
-                        Query.Field
-                        Query.Step
-                        Query.ImplRank
-                        Query.Train
-                        Query.Variant
                         Schema
-                        Sql
-                        Sql.Import
-                        Sql.Transaction
-                        TrainConfig
-                        Utils.Conduit
-                        Utils.ImplTiming
                         Utils.Pair
                         Utils.PropValue
                         Utils.Vector
 
-  Other-Modules:        Commands
-                        Exceptions
+  Other-Modules:        Exceptions
                         Exceptions.Class
                         Migration
                         Model
-                        Predictor.Config
-                        Predictor.Raw
                         Pretty
                         Schema.Algorithm
                         Schema.Dataset
