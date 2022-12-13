@@ -13,41 +13,14 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Schema.Dataset where
 
-import Data.String.Interpolate.IsString (i)
 import Data.Text (Text)
-import Database.Persist.Sql (Unique)
 import Database.Persist.TH (persistUpperCase)
 
-import Schema.Utils (EntityDef, Int64, MonadSql, Transaction, (.>))
-import qualified Schema.Utils as Utils
+import Schema.Utils (mkEntities)
 
-Utils.mkEntities "schema" [persistUpperCase|
+mkEntities "schema" [persistUpperCase|
 Dataset
     name Text
     UniqDataset name
     deriving Eq Show
 |]
-
-deriving instance Show (Unique Dataset)
-
-migrations :: MonadSql m => Int64 -> Transaction m [EntityDef]
-migrations = Utils.mkMigrationLookup
-    [ 5 .> schema $ do
-        Utils.createTableFromSchema schema
-
-        Utils.executeSql [i|
-INSERT INTO "Dataset"
-SELECT ROW_NUMBER() OVER (ORDER BY dataset), dataset
-FROM (SELECT DISTINCT dataset FROM Graph)
-|]
-
-        Utils.executeSql [i|
-ALTER TABLE "Graph"
-ADD COLUMN "datasetId" INTEGER REFERENCES "Dataset"
-|]
-
-        Utils.executeSql [i|
-UPDATE "Graph"
-SET "datasetId" = (SELECT "id" FROM "Dataset" WHERE "name" = "dataset")
-|]
-    ]
