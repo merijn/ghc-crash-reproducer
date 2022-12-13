@@ -61,35 +61,25 @@ Common all
                ,        time ^>= 1.9
                ,        unix ^>= 2.7.0
 
-Common exes
-  GHC-Options:          -rtsopts -threaded -with-rtsopts=-qg
-  GHC-Prof-Options:     "-with-rtsopts=-qg -p -l-au"
-
 Library
   Import:               all
   Hs-Source-Dirs:       src
   Exposed-Modules:      Core
-                        FormattedOutput
-                        InteractiveInput
                         Model.Stats
-                        Options
                         Predictor
                         Pretty.Fields
                         Pretty.Fields.Persistent
                         Pretty.Fields.Record
-                        Pretty.List
                         Query
                         Query.Field
                         Query.Step
                         Query.ImplRank
                         Query.Train
                         Query.Variant
-                        RuntimeData
                         Schema
                         Sql
                         Sql.Import
                         Sql.Transaction
-                        StepAggregate
                         TrainConfig
                         Utils.Conduit
                         Utils.ImplTiming
@@ -97,15 +87,11 @@ Library
                         Utils.PropValue
                         Utils.Vector
 
-  Autogen-Modules:      Paths_benchmark_analysis
   Other-Modules:        Commands
-                        Commands.Debug
                         Exceptions
                         Exceptions.Class
                         Migration
                         Model
-                        OptionParsers
-                        Paths_benchmark_analysis
                         Predictor.Config
                         Predictor.Raw
                         Pretty
@@ -232,95 +218,6 @@ Library
                ,        validated-literals ^>= 0.3.0
                ,        vector ^>= 0.12.2.0
                ,        vector-algorithms ^>= 0.8.0.3
-
-Executable Ingest
-  Import:               all, exes
-  Hs-Source-Dirs:       ingest-src
-  Main-Is:              Main.hs
-  Other-Modules:        Commands.Add
-                        Commands.Import
-                        Commands.List
-                        Commands.Query
-                        Commands.Reset
-                        Commands.Set
-                        Commands.Unset
-                        Jobs
-                        JobPool
-                        Parsers
-                        Query.Missing
-
-  Other-Extensions:     DeriveFoldable
-                        DeriveFunctor
-                        DeriveTraversable
-                        ScopedTypeVariables
-                        TypeFamilies
-
-  Build-Depends:        benchmark-analysis
-               ,        broadcast-chan-conduit ^>= 0.2.1
-               ,        attoparsec ^>= 0.13.1
-               ,        cryptonite-conduit ^>= 0.2.0
-               ,        directory ^>= 1.3.4.0
-               ,        filepath ^>= 1.4.0
-               ,        hostname ^>= 1.0
-               ,        memory ^>= 0.15
-               ,        process ^>= 1.6.0
-               ,        resource-pool ^>= 0.2.3.2
-               ,        stm ^>= 2.5.0
-               ,        transformers
-
-Executable Model
-  Import:               all, exes
-  Hs-Source-Dirs:       model-src
-  Main-Is:              Main.hs
-  Other-Modules:        Evaluate
-                        ModelOptions
-                        PredictorResults
-                        Train
-                        Validate
-                        Query.Dump
-
-  Other-Extensions:     BangPatterns
-                        DeriveFunctor
-                        FlexibleContexts
-                        ScopedTypeVariables
-                        TypeFamilies
-
-  Build-Depends:        benchmark-analysis
-               ,        binary ^>= 0.8.7
-               ,        binary-conduit ^>= 1.3
-               ,        data-interval ^>= 1.3.0
-               ,        megaparsec ^>= 7.0.0
-               ,        validated-literals ^>= 0.3.0
-               ,        vector ^>= 0.12.2.0
-               ,        vector-algorithms ^>= 0.8.0.3
-
-Executable Plot
-  Import:               all, exes
-  Default-Language:     Haskell2010
-  Hs-Source-Dirs:       plot-src
-  Main-Is:              Main.hs
-  Other-Modules:        BarPlot
-                        GlobalPlotOptions
-                        Heatmap
-                        Interesting
-                        PlotOptions
-                        Query.Dump
-                        Query.Level
-                        Query.StepHeatmap
-                        Query.Time
-
-  Other-Extensions:     BangPatterns
-                        DeriveFoldable
-                        DeriveGeneric
-                        DerivingVia
-                        FlexibleContexts
-
-  Build-Depends:        benchmark-analysis
-               ,        binary ^>= 0.8.7
-               ,        data-interval ^>= 1.3.0
-               ,        semigroups ^>= 0.19.1
-               ,        statistics ^>= 0.15.2.0
-               ,        vector ^>= 0.12.2.0
 
 Source-Repository head
   Type:     git
