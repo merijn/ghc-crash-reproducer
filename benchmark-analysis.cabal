@@ -42,23 +42,19 @@ Library
   Includes:             sqlite-functions.h
 
   Other-Extensions:     CApiFFI
-                        ConstraintKinds
                         DerivingStrategies
                         FlexibleContexts
                         FlexibleInstances
                         GADTs
                         GeneralizedNewtypeDeriving
-                        LambdaCase
                         MultiParamTypeClasses
                         OverloadedStrings
                         QuasiQuotes
                         RankNTypes
-                        ScopedTypeVariables
                         StandaloneDeriving
                         TemplateHaskell
                         TypeFamilies
                         UndecidableInstances
-                        ViewPatterns
 
   Build-Depends:        base
                ,        persistent ^>= 2.14.3
