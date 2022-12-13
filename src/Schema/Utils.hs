@@ -21,6 +21,7 @@ module Schema.Utils
     , mkForeignRef
     , addForeignRef
     , mkEntities
+    , mkEntitiesWith
     , mkMigration
     , mkMigrationLookup
     , getTypeName
@@ -43,7 +44,7 @@ import Database.Persist.Types
     , ForeignDef(..)
     , noCascade)
 
-import Schema.Utils.TH (mkEntities)
+import Schema.Utils.TH (mkEntities, mkEntitiesWith)
 import Sql.Core (MonadLogger, MonadSql, MonadThrow, SqlRecord, Transaction)
 import qualified Sql.Core as Sql
 
