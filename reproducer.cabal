@@ -45,7 +45,7 @@ Library
                         TemplateHaskell
 
   Build-Depends:        base
-               ,        template-haskell ^>= 2.16.0.0
+               ,        template-haskell >= 2.16.0.0
 
 Source-Repository head
   Type:     git
