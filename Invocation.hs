@@ -11,12 +11,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
-module Schema.Dataset where
+module Invocation where
 
 import Data.Text (Text)
 import Database.Persist.TH (persistUpperCase)
 
-import Schema.Utils (mkEntities)
+import TH (mkEntities)
 
 mkEntities "schema" [persistUpperCase|
 Dataset

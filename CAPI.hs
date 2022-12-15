@@ -1,5 +1,5 @@
 {-# LANGUAGE CApiFFI #-}
-module SQLiteExts where
+module CAPI where
 
 import Foreign (Ptr, FunPtr)
 import Foreign.C (CInt(..))

@@ -1,11 +1,11 @@
-module Schema.Utils (mkEntities, mkEntitiesWith) where
+module TH (mkEntities, mkEntitiesWith) where
 
 import Language.Haskell.TH (Dec, Q)
 import Database.Persist.EntityDef (EntityDef)
 import Database.Persist.Quasi.Internal (UnboundEntityDef)
 import qualified Database.Persist.TH as TH
 
-import SQLiteExts
+import CAPI
 
 mkEntities :: String -> [UnboundEntityDef] -> Q [Dec]
 mkEntities name = TH.share
