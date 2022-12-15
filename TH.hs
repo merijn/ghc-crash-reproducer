@@ -1,16 +1,11 @@
-module TH (mkEntities, mkEntitiesWith) where
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
+module TH (templateFoo) where
 
 import Language.Haskell.TH (Dec, Q)
-import Database.Persist.EntityDef (EntityDef)
-import Database.Persist.Quasi.Internal (UnboundEntityDef)
-import qualified Database.Persist.TH as TH
+import Language.Haskell.TH.Syntax (liftString)
 
 import CAPI
 
-mkEntities :: String -> [UnboundEntityDef] -> Q [Dec]
-mkEntities name = TH.share
-    [TH.mkPersist TH.sqlSettings, TH.mkEntityDefList name]
-
-mkEntitiesWith :: [EntityDef] -> String -> [UnboundEntityDef] -> Q [Dec]
-mkEntitiesWith ents name = TH.share
-    [TH.mkPersistWith TH.sqlSettings ents, TH.mkEntityDefList name]
+templateFoo :: String -> Q [Dec]
+templateFoo name = [d|str :: String;str = $(liftString name)|]
